@@ -19,6 +19,12 @@ static esp_mqtt_client_handle_t mqtt_client = NULL;
 static QueueHandle_t mqtt_queue = NULL;
 static TaskHandle_t mqtt_task_handle = NULL;
 
+uint8_t g_recvData[30];
+uint8_t g_recvDataLen;
+uint8_t g_recvTopic[30];
+uint8_t g_recvTopicLen;
+uint8_t is_new_data = 0;
+
 // MQTT event handler
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) 
 {
@@ -29,13 +35,23 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     {
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-            esp_mqtt_client_publish(client, MQTT_DEFAULT_TOPIC, "Connected from ESP32-S3", 0, 1, 0);
+            esp_mqtt_client_publish(client, MQTT_ESP_CONTROL_TOPIC, "Connected from ESP32-S3", 0, 1, 0);
+            esp_mqtt_client_subscribe(mqtt_client, MQTT_RASS_CONTROL_TOPIC , 0);
             break;
         case MQTT_EVENT_DISCONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
             break;
         case MQTT_EVENT_PUBLISHED:
             ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+            break;
+        case MQTT_EVENT_DATA:
+            printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+            printf("DATA=%.*s\r\n", event->data_len, event->data);
+            memcpy( (char *)g_recvData  , event->data  , event->data_len );
+            memcpy( (char *)g_recvTopic , event->topic , event->data_len );
+            is_new_data = 1;
+            g_recvDataLen = event->data_len;
+            g_recvTopicLen = event->topic;
             break;
         case MQTT_EVENT_ERROR:
             ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -81,7 +97,7 @@ static void mqtt_task(void *pvParameters)
     {
         if(xQueueReceive(mqtt_queue, &msg, portMAX_DELAY) == pdTRUE) 
         {
-            ESP_LOGI(TAG, "Sending message to topic %s: %s", msg.topic, msg.data);
+            ESP_LOGI(TAG, "Sending message to topic %s: %s", msg.topic, msg.data );
             uint8_t status = esp_mqtt_client_publish(mqtt_client, msg.topic, msg.data, strlen(msg.data), msg.qos, msg.retain);
             if(status == -1)
                 ESP_LOGE(TAG, "Sending message to topic %s: %s Fails", msg.topic, msg.data);
@@ -101,7 +117,7 @@ void mqtt_init(void)
     }
     
     // Create MQTT task
-    xTaskCreate(mqtt_task, "mqtt_task", MQTT_TASK_STACK_SIZE, NULL, MQTT_TASK_PRIORITY, &mqtt_task_handle);
+    xTaskCreatePinnedToCore(mqtt_task, "mqtt_task", MQTT_TASK_STACK_SIZE, NULL, MQTT_TASK_PRIORITY, &mqtt_task_handle , MQTT_CORE_ID);
     
     ESP_LOGI(TAG, "MQTT system initialized");
 }

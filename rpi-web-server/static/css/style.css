@@ -1,0 +1,232 @@
+/* Main Layout */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    border: none;
+}
+
+.card-header {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+/* Connection Status */
+#connection-status {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+    transition: background-color 0.3s ease;
+}
+
+#connection-status.connected {
+    background-color: #28a745;
+}
+
+/* Node List */
+.node-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border-left: 4px solid #e9ecef;
+}
+
+.node-item:hover {
+    background-color: #e9ecef;
+}
+
+.node-item.active {
+    background-color: #e8f4ff;
+    border-left-color: #0d6efd;
+}
+
+.node-item .status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #dc3545;
+    margin-right: 10px;
+}
+
+.node-item .status-indicator.online {
+    background-color: #28a745;
+}
+
+.node-item .node-info {
+    flex-grow: 1;
+}
+
+.node-item .node-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.node-item .node-status {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.node-item .node-last-seen {
+    font-size: 0.7rem;
+    color: #adb5bd;
+}
+
+/* Charts */
+.chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+}
+
+/* Overview Cards */
+.overview-card {
+    transition: transform 0.2s ease;
+}
+
+.overview-card:hover {
+    transform: translateY(-5px);
+}
+
+.overview-card .card-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+}
+
+.overview-card .card-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.overview-card .card-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Control Form */
+#control-form .form-range {
+    height: 24px;
+}
+
+#value-display {
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Activity Log */
+#activity-log tr {
+    cursor: pointer;
+}
+
+#activity-log .data-badge {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+#activity-log .sensor-data {
+    background-color: #e3f2fd;
+    color: #0d6efd;
+}
+
+#activity-log .control-command {
+    background-color: #fff3cd;
+    color: #fd7e14;
+}
+
+/* Toast Notifications */
+.toast-container {
+    z-index: 1100;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 767px) {
+    .chart-container {
+        height: 180px;
+    }
+    
+    .overview-card .card-icon {
+        font-size: 1.5rem;
+    }
+    
+    .overview-card .card-value {
+        font-size: 1.4rem;
+    }
+    
+    .overview-card .card-label {
+        font-size: 0.7rem;
+    }
+}
+
+/* Animations */
+.sensor-update {
+    animation: pulse 1s;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    
+    .card {
+        background-color: #1e1e1e;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-body, .card-header.bg-light {
+        background-color: #1e1e1e !important;
+        color: #e0e0e0 !important;
+    }
+    
+    .table {
+        color: #e0e0e0;
+    }
+    
+    .table-light {
+        background-color: #2c2c2c;
+        color: #e0e0e0;
+    }
+    
+    .node-item {
+        background-color: #2c2c2c;
+        border-left-color: #3c3c3c;
+    }
+    
+    .node-item:hover {
+        background-color: #333333;
+    }
+    
+    .node-item.active {
+        background-color: #0d47a1;
+        border-left-color: #1976d2;
+    }
+    
+    .node-item .node-status, .node-item .node-last-seen {
+        color: #b0b0b0;
+    }
+}

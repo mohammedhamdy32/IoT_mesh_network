@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web of Things Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-network-wired me-2"></i>
+                Web of Things Dashboard
+            </a>
+            <span id="connection-status" class="badge bg-danger">Disconnected</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <div class="col-md-3">
+                <!-- Sidebar with node list -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-microchip me-2"></i>
+                            Sensor Nodes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="node-list" class="list-group">
+                            <!-- Nodes will be added here dynamically -->
+                            <div class="text-center p-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="text-muted mt-2">Loading nodes...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Node control panel -->
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-sliders me-2"></i>
+                            Node Control
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="control-form">
+                            <div class="mb-3">
+                                <label for="node-selector" class="form-label">Select Node</label>
+                                <select class="form-select" id="node-selector" required>
+                                    <option value="" selected disabled>Choose a node</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="action-type" class="form-label">Action</label>
+                                <select class="form-select" id="action-type" required>
+                                    <option value="servo" selected>Servo Control</option>
+                                    <option value="led">LED Control</option>
+                                    <option value="relay">Relay Switch</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="control-value" class="form-label">Value</label>
+                                <div class="d-flex align-items-center">
+                                    <input type="range" class="form-range flex-grow-1" id="control-value" min="0" max="180" value="90">
+                                    <span id="value-display" class="ms-2 badge bg-secondary">90</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Send Command
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <!-- Main dashboard area -->
+                <div class="row">
+                    <!-- Overview cards -->
+                    <div class="col-md-12 mb-3">
+                        <div class="row" id="overview-cards">
+                            <!-- Cards will be added dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Charts section -->
+                    <div class="col-md-12 mb-3">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    Sensor Data
+                                </h5>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-light" id="btn-realtime">Real-Time</button>
+                                    <button type="button" class="btn btn-sm btn-outline-light" id="btn-history">History</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Temperature chart -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="chart-container">
+                                            <canvas id="temperatureChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <!-- Humidity chart -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="chart-container">
+                                            <canvas id="humidityChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <!-- Light chart -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="chart-container">
+                                            <canvas id="lightChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <!-- Pressure chart -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="chart-container">
+                                            <canvas id="pressureChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity log -->
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-history me-2"></i>
+                                    Activity Log
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Timestamp</th>
+                                                <th>Node</th>
+                                                <th>Type</th>
+                                                <th>Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="activity-log">
+                                            <!-- Log entries will be added here dynamically -->
+                                            <tr>
+                                                <td colspan="4" class="text-center text-muted">No activity recorded yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="notification-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-info-circle me-2 text-primary"></i>
+                <strong class="me-auto" id="toast-title">Notification</strong>
+                <small id="toast-time">just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-message">
+                This is a notification message.
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/4.0.1/chart.umd.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.umd.js" integrity="sha512-gQhCDsnnnUfaRzD8k1L5llCCV6O9HN09zClIzzeJ8OJ9MpGmIlCxm+pdCkqTwqJ4JcjbojFr79rl2F1mzcoLMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

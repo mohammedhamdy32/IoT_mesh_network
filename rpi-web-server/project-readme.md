@@ -83,6 +83,14 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 
 6. Access the dashboard at http://localhost:8000
 
+7. Create your own user account (read sensor data permission only)
+
+8. For admin access (read sensor data and control commands), login with:
+
+   - Username: `admin`
+   - Password: `admin123`
+
+
 ## MQTT Topic Structure
 
 - **Sensor Data**: `wot/sensors/<node_id>`

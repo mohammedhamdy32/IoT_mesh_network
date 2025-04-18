@@ -3,8 +3,10 @@
 #define MESH_PREFIX "mesh-network"
 #define MESH_PASSWORD "meshpassword"
 #define MESH_PORT 5555
-#define POT_PIN   23
+#define POT_PIN   34
 #define LED_PIN   2 
+#include <ArduinoJson.h>
+StaticJsonDocument<200> doc;
 
 Scheduler userScheduler;
 painlessMesh mesh;
@@ -25,7 +27,10 @@ void sendMessage() {
         }
     }
 
-    String msg = "Node1,Pot:" + String(level) + ",LED:" + (ledState ? "ON" : "OFF");
+    String msg = "1{\"temperature\": " + String(level, 1) + 
+                ", \"humidity\": 65.2" +
+                ", \"light\": 350" +
+                ", \"pressure\": 1013.2}";
     mesh.sendBroadcast(msg);
     Serial.println("Broadcast: " + msg);
 }
@@ -34,21 +39,35 @@ Task taskSendMessage(TASK_SECOND * 5, TASK_FOREVER, &sendMessage);
 
 void receivedCallback(uint32_t from, String &msg) {
     msg.trim();
-    msg.toLowerCase();
     Serial.println("Received from " + String(from) + ": " + msg);
-    if (msg == "onl" || msg == "node1:led:on") {
-        digitalWrite(LED_PIN, HIGH);
+    String jsonPart = msg.substring(1);
+
+    DeserializationError error = deserializeJson( doc, jsonPart );
+    float value = doc["value"];
+    Serial.println(value);
+
+    /* For node 2 */
+    if( msg.startsWith("1") ) 
+    {
+
+      /* LED ON */
+      if( value > 90 )
+      {
         ledState = true;
         manualOverride = true;
-        mesh.sendSingle(from, "Node1:ACK:LED_ON");
-        Serial.println("LED turned ON");
-    } else if (msg == "offl" || msg == "node1:led:off") {
-        digitalWrite(LED_PIN, LOW);
+        digitalWrite(LED_PIN, HIGH);
+        Serial.println("LED ON");
+      }else
+      {
         ledState = false;
         manualOverride = true;
-        mesh.sendSingle(from, "Node1:ACK:LED_OFF");
-        Serial.println("LED turned OFF");
-    }
+        digitalWrite(LED_PIN, LOW);
+        Serial.println("LED OFF");
+      }
+
+    } 
+    
+
 }
 
 void setup() {

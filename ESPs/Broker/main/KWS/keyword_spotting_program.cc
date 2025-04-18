@@ -317,22 +317,22 @@ static void keyword_spotting_loop(void)
       }
     }
 
-    if ( max_result > 0.8f ) 
+    if ( max_result > 0.9f ) 
     {
 
       if( kCategoryLabels[max_idx][0] == 'O' && kCategoryLabels[max_idx][1] == 'N' )
       {
         MicroPrintf("Detected %7s, score: %.2f", kCategoryLabels[max_idx] , static_cast<double>(max_result));
         is_new_data = 1;
-        memcpy( (char *)g_recvData  , "Node2:LED:ON\n"  , 13 );
-        g_recvDataLen = 13;
+        memcpy( (char *)g_recvData  , "2{\"action\": \"servo\", \"value\": 180.0, \"timestamp\": \"2025-04-16T14:34:30.729291\"}\n"  , 81 );
+        g_recvDataLen = 81;
       }
       else if( kCategoryLabels[max_idx][0] == 'O' && kCategoryLabels[max_idx][1] == 'F' )
       {
         MicroPrintf("Detected %7s, score: %.2f", kCategoryLabels[max_idx] , static_cast<double>(max_result));
         is_new_data = 1;
-        memcpy( (char *)g_recvData  , "Node2:LED:OFF\n"  , 14 );
-        g_recvDataLen = 14;      
+        memcpy( (char *)g_recvData  , "2{\"action\": \"servo\", \"value\": 0.000, \"timestamp\": \"2025-04-16T14:34:30.729291\"}\n"  , 81 );
+        g_recvDataLen = 81;      
       }
 
     }

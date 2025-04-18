@@ -35,10 +35,11 @@ static void uart_task(void *pvParameters)
             memcpy(rx_msg.data, rx_buffer, len);
             rx_msg.data_len = len;
             
-            if (xQueueSend(uart_queue, &rx_msg, pdMS_TO_TICKS(100)) != pdPASS) 
+            if( xQueueSendFromISR(uart_queue, &rx_msg, pdMS_TO_TICKS(10)) != pdPASS ) 
             {
                 ESP_LOGE(TAG, "Failed to send received data to queue");
-            } else {
+            } else 
+            {
                 ESP_LOGI(TAG, "Received %d bytes, sent to queue", len);
             }
         }

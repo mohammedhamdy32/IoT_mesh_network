@@ -47,8 +47,8 @@ void app_main(void)
     // int counter = 0;
     // snprintf(message, sizeof(message), "Sensor reading: %d", counter++);        
     // Send the message
-    mqtt_send_message( MQTT_DATA_TOPIC , message , 0 , 0 );
-    mqtt_send_message( MQTT_ESP_CONTROL_TOPIC , "on" , 0 , 0 );
+    // mqtt_send_message( MQTT_DATA_TOPIC , message , 0 , 0 );
+    // mqtt_send_message( MQTT_ESP_CONTROL_TOPIC , "on" , 0 , 0 );
     
     ESP_LOGI(TAG, "Application started");
 
@@ -70,12 +70,17 @@ void app_main(void)
             {
                 // Null-terminate for printing as string (if appropriate)
                 rx_msg.data[rx_msg.data_len] = '\0';
-                ESP_LOGI(TAG, "Received message: %s", (char *)rx_msg.data);
-                
+                ESP_LOGI(TAG, "Received message: %s", (char *)(rx_msg.data) );
+                uint8_t node_id = rx_msg.data[0];
+
                 /* Send message to mqtt server */
-                mqtt_send_message( MQTT_DATA_TOPIC , (char *)rx_msg.data , 0 , 0 );
+                if( node_id == '1' )
+                    mqtt_send_message( MQTT_NODE_1_SENDSOR_TOPIC , (char *)(rx_msg.data+1) , 0 , 0 );
+                else if( node_id == '2' )
+                    mqtt_send_message( MQTT_NODE_2_SENDSOR_TOPIC , (char *)(rx_msg.data+1) , 0 , 0 );
             }
         }
+
         if( is_new_data == 1 )
         {
             is_new_data = 0;

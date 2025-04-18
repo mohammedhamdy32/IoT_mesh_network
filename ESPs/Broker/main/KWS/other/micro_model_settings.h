@@ -40,9 +40,11 @@ constexpr int kFeatureStrideMs = 20;
 constexpr int kFeatureDurationMs = 30;
 
 /* Variables for the model's output categories. */
-constexpr int kCategoryCount = 4;
+constexpr int kCategoryCount = 6;
 constexpr const char* kCategoryLabels[kCategoryCount] = {
     "ON",
+    "left",
+    "right",
     "OFF",
     "silence",
     "unknown",

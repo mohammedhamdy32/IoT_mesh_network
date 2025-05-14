@@ -16,6 +16,9 @@
                 Web of Things Dashboard
             </a>
             <span id="connection-status" class="badge bg-danger">Disconnected</span>
+            <button class="btn btn-outline-light ms-3" onclick="window.logout()">
+                <i class="fas fa-sign-out-alt me-1"></i> Logout
+            </button>
         </div>
     </nav>
 
@@ -195,5 +198,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script>
 
     <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

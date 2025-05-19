@@ -238,7 +238,7 @@ def validate_refresh_token(refresh_token: str):
         "SELECT * FROM refresh_tokens WHERE token = ? AND expires_at > ?",
         (refresh_token, datetime.utcnow().isoformat())
     )
-    token_data = cursor.fetchone()
+    token_data = cursor.fetchone() # Get the token data if it exists and is not expired
     
     conn.close()
     

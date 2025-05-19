@@ -38,7 +38,7 @@ MQTT_SENSOR_TOPIC = "wot/sensors/#"
 MQTT_CONTROL_TOPIC = "wot/control/#"
 
 # JWT Configuration
-SECRET_KEY = os.getenv("SECRET_KEY", "change_this_to_secure_random_secret_key")
+SECRET_KEY = os.getenv("SECRET_KEY", "Badawy_random_secret_key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 30
